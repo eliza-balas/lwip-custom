@@ -251,10 +251,17 @@ pbuf_alloc(pbuf_layer layer, u16_t length, pbuf_type type)
           return NULL;
         }
         qlen = LWIP_MIN(rem_len, (u16_t)(PBUF_POOL_BUFSIZE_ALIGNED - LWIP_MEM_ALIGN_SIZE(offset)));
-        pbuf_init_alloced_pbuf(q, LWIP_MEM_ALIGN((void *)((u8_t *)q + SIZEOF_STRUCT_PBUF + offset)),
-                               rem_len, qlen, type, 0);
-        LWIP_ASSERT("pbuf_alloc: pbuf q->payload properly aligned",
-                    ((mem_ptr_t)q->payload % MEM_ALIGNMENT) == 0);
+        if (layer != PBUF_TRANSPORT) {
+			pbuf_init_alloced_pbuf(q, LWIP_MEM_ALIGN((void *)((u8_t *)q + SIZEOF_STRUCT_PBUF)) + offset,
+								   rem_len, qlen, type, 0);
+	        LWIP_ASSERT("pbuf_alloc: final payload addr will be properly aligned",
+	                    (((mem_ptr_t)q->payload - offset)% MEM_ALIGNMENT) == 0);
+        } else {
+			pbuf_init_alloced_pbuf(q, LWIP_MEM_ALIGN((void *)((u8_t *)q + SIZEOF_STRUCT_PBUF + offset)),
+								   rem_len, qlen, type, 0);
+	        LWIP_ASSERT("pbuf_alloc: pbuf q->payload properly aligned",
+	                    ((mem_ptr_t)q->payload % MEM_ALIGNMENT) == 0);
+        }
         LWIP_ASSERT("PBUF_POOL_BUFSIZE must be bigger than MEM_ALIGNMENT",
                     (PBUF_POOL_BUFSIZE_ALIGNED - LWIP_MEM_ALIGN_SIZE(offset)) > 0 );
         if (p == NULL) {
@@ -285,10 +292,17 @@ pbuf_alloc(pbuf_layer layer, u16_t length, pbuf_type type)
       if (p == NULL) {
         return NULL;
       }
-      pbuf_init_alloced_pbuf(p, LWIP_MEM_ALIGN((void *)((u8_t *)p + SIZEOF_STRUCT_PBUF + offset)),
-                             length, length, type, 0);
-      LWIP_ASSERT("pbuf_alloc: pbuf->payload properly aligned",
-                  ((mem_ptr_t)p->payload % MEM_ALIGNMENT) == 0);
+      if (layer != PBUF_TRANSPORT) {
+			pbuf_init_alloced_pbuf(p, LWIP_MEM_ALIGN((void *)((u8_t *)p + SIZEOF_STRUCT_PBUF)) + offset,
+								 length, length, type, 0);
+	        LWIP_ASSERT("pbuf_alloc: final payload addr will be properly aligned",
+	                    (((mem_ptr_t)p->payload - offset)% MEM_ALIGNMENT) == 0);
+      } else {
+			pbuf_init_alloced_pbuf(p, LWIP_MEM_ALIGN((void *)((u8_t *)p + SIZEOF_STRUCT_PBUF + offset)),
+								 length, length, type, 0);
+			LWIP_ASSERT("pbuf_alloc: pbuf->payload properly aligned",
+					  ((mem_ptr_t)p->payload % MEM_ALIGNMENT) == 0);
+      }
       break;
     }
     default:

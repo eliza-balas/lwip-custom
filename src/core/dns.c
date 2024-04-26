@@ -793,7 +793,7 @@ dns_send(u8_t idx)
   }
 
   /* if here, we have either a new query or a retry on a previous query to process */
-  p = pbuf_alloc(PBUF_TRANSPORT, (u16_t)(SIZEOF_DNS_HDR + strlen(entry->name) + 2 +
+  p = pbuf_alloc(PBUF_TRANSPORT_UDP, (u16_t)(SIZEOF_DNS_HDR + strlen(entry->name) + 2 +
                                          SIZEOF_DNS_QUERY), PBUF_RAM);
   if (p != NULL) {
     const ip_addr_t *dst;

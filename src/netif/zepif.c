@@ -183,7 +183,7 @@ zepif_linkoutput(struct netif *netif, struct pbuf *p)
   state = (struct zepif_state *)netif->state;
   LWIP_ASSERT("state->pcb != NULL", state->pcb != NULL);
 
-  q = pbuf_alloc(PBUF_TRANSPORT, sizeof(struct zep_hdr) + p->tot_len, PBUF_RAM);
+  q = pbuf_alloc(PBUF_TRANSPORT_UDP, sizeof(struct zep_hdr) + p->tot_len, PBUF_RAM);
   if (q == NULL) {
     return ERR_MEM;
   }

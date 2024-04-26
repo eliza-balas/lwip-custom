@@ -1905,7 +1905,7 @@ dhcp_create_msg(struct netif *netif, struct dhcp *dhcp, u8_t message_type, u16_t
 #endif
   LWIP_ERROR("dhcp_create_msg: netif != NULL", (netif != NULL), return NULL;);
   LWIP_ERROR("dhcp_create_msg: dhcp != NULL", (dhcp != NULL), return NULL;);
-  p_out = pbuf_alloc(PBUF_TRANSPORT, sizeof(struct dhcp_msg), PBUF_RAM);
+  p_out = pbuf_alloc(PBUF_TRANSPORT_UDP, sizeof(struct dhcp_msg), PBUF_RAM);
   if (p_out == NULL) {
     LWIP_DEBUGF(DHCP_DEBUG | LWIP_DBG_TRACE | LWIP_DBG_LEVEL_SERIOUS,
                 ("dhcp_create_msg(): could not allocate pbuf\n"));

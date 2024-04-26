@@ -627,7 +627,7 @@ tcp_write(struct tcp_pcb *pcb, const void *arg, u16_t len, u8_t apiflags)
 #if TCP_OVERSIZE
       LWIP_ASSERT("oversize == 0", oversize == 0);
 #endif /* TCP_OVERSIZE */
-      if ((p2 = pbuf_alloc(PBUF_TRANSPORT, seglen, PBUF_ROM)) == NULL) {
+      if ((p2 = pbuf_alloc(PBUF_TRANSPORT_TCP, seglen, PBUF_ROM)) == NULL) {
         LWIP_DEBUGF(TCP_OUTPUT_DEBUG | LWIP_DBG_LEVEL_SERIOUS, ("tcp_write: could not allocate memory for zero-copy pbuf\n"));
         goto memerr;
       }
@@ -643,7 +643,7 @@ tcp_write(struct tcp_pcb *pcb, const void *arg, u16_t len, u8_t apiflags)
       ((struct pbuf_rom *)p2)->payload = (const u8_t *)arg + pos;
 
       /* Second, allocate a pbuf for the headers. */
-      if ((p = pbuf_alloc(PBUF_TRANSPORT, optlen, PBUF_RAM)) == NULL) {
+      if ((p = pbuf_alloc(PBUF_TRANSPORT_TCP, optlen, PBUF_RAM)) == NULL) {
         /* If allocation fails, we have to deallocate the data pbuf as
          * well. */
         pbuf_free(p2);
@@ -877,7 +877,7 @@ tcp_split_unsent_seg(struct tcp_pcb *pcb, u16_t split)
   remainder = useg->len - split;
 
   /* Create new pbuf for the remainder of the split */
-  p = pbuf_alloc(PBUF_TRANSPORT, remainder + optlen, PBUF_RAM);
+  p = pbuf_alloc(PBUF_TRANSPORT_TCP, remainder + optlen, PBUF_RAM);
   if (p == NULL) {
     LWIP_DEBUGF(TCP_OUTPUT_DEBUG | LWIP_DBG_LEVEL_SERIOUS,
                 ("tcp_split_unsent_seg: could not allocate memory for pbuf remainder %u\n", remainder));
@@ -1077,7 +1077,7 @@ tcp_enqueue_flags(struct tcp_pcb *pcb, u8_t flags)
   optlen = LWIP_TCP_OPT_LENGTH_SEGMENT(optflags, pcb);
 
   /* Allocate pbuf with room for TCP header + options */
-  if ((p = pbuf_alloc(PBUF_TRANSPORT, optlen, PBUF_RAM)) == NULL) {
+  if ((p = pbuf_alloc(PBUF_TRANSPORT_TCP, optlen, PBUF_RAM)) == NULL) {
     tcp_set_flags(pcb, TF_NAGLEMEMERR);
     TCP_STATS_INC(tcp.memerr);
     return ERR_MEM;

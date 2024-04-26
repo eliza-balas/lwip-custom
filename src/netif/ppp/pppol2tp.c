@@ -175,7 +175,7 @@ static err_t pppol2tp_write(ppp_pcb *ppp, void *ctx, struct pbuf *p) {
   /* skip address & flags */
   pbuf_remove_header(p, 2);
 
-  ph = pbuf_alloc(PBUF_TRANSPORT, (u16_t)(PPPOL2TP_OUTPUT_DATA_HEADER_LEN), PBUF_RAM);
+  ph = pbuf_alloc(PBUF_TRANSPORT_UDP, (u16_t)(PPPOL2TP_OUTPUT_DATA_HEADER_LEN), PBUF_RAM);
   if(!ph) {
     LINK_STATS_INC(link.memerr);
     LINK_STATS_INC(link.proterr);
@@ -216,7 +216,7 @@ static err_t pppol2tp_netif_output(ppp_pcb *ppp, void *ctx, struct pbuf *p, u_sh
 #endif /* MIB2_STATS */
 
   /* @todo: try to use pbuf_header() here! */
-  pb = pbuf_alloc(PBUF_TRANSPORT, PPPOL2TP_OUTPUT_DATA_HEADER_LEN + sizeof(protocol), PBUF_RAM);
+  pb = pbuf_alloc(PBUF_TRANSPORT_UDP, PPPOL2TP_OUTPUT_DATA_HEADER_LEN + sizeof(protocol), PBUF_RAM);
   if(!pb) {
     LINK_STATS_INC(link.memerr);
     LINK_STATS_INC(link.proterr);
@@ -834,7 +834,7 @@ static err_t pppol2tp_send_sccrq(pppol2tp_pcb *l2tp) {
 #endif /* PPPOL2TP_AUTH_SUPPORT */
 
   /* allocate a buffer */
-  pb = pbuf_alloc(PBUF_TRANSPORT, len, PBUF_RAM);
+  pb = pbuf_alloc(PBUF_TRANSPORT_UDP, len, PBUF_RAM);
   if (pb == NULL) {
     return ERR_MEM;
   }
@@ -929,7 +929,7 @@ static err_t pppol2tp_send_scccn(pppol2tp_pcb *l2tp, u16_t ns) {
 #endif /* PPPOL2TP_AUTH_SUPPORT */
 
   /* allocate a buffer */
-  pb = pbuf_alloc(PBUF_TRANSPORT, len, PBUF_RAM);
+  pb = pbuf_alloc(PBUF_TRANSPORT_UDP, len, PBUF_RAM);
   if (pb == NULL) {
     return ERR_MEM;
   }
@@ -976,7 +976,7 @@ static err_t pppol2tp_send_icrq(pppol2tp_pcb *l2tp, u16_t ns) {
   len = 12 +8 +8 +10;
 
   /* allocate a buffer */
-  pb = pbuf_alloc(PBUF_TRANSPORT, len, PBUF_RAM);
+  pb = pbuf_alloc(PBUF_TRANSPORT_UDP, len, PBUF_RAM);
   if (pb == NULL) {
     return ERR_MEM;
   }
@@ -1024,7 +1024,7 @@ static err_t pppol2tp_send_iccn(pppol2tp_pcb *l2tp, u16_t ns) {
   len = 12 +8 +10 +10;
 
   /* allocate a buffer */
-  pb = pbuf_alloc(PBUF_TRANSPORT, len, PBUF_RAM);
+  pb = pbuf_alloc(PBUF_TRANSPORT_UDP, len, PBUF_RAM);
   if (pb == NULL) {
     return ERR_MEM;
   }
@@ -1071,7 +1071,7 @@ static err_t pppol2tp_send_zlb(pppol2tp_pcb *l2tp, u16_t ns, u16_t nr) {
   len = 12;
 
   /* allocate a buffer */
-  pb = pbuf_alloc(PBUF_TRANSPORT, len, PBUF_RAM);
+  pb = pbuf_alloc(PBUF_TRANSPORT_UDP, len, PBUF_RAM);
   if (pb == NULL) {
     return ERR_MEM;
   }
@@ -1100,7 +1100,7 @@ static err_t pppol2tp_send_stopccn(pppol2tp_pcb *l2tp, u16_t ns) {
   len = 12 +8 +8 +8;
 
   /* allocate a buffer */
-  pb = pbuf_alloc(PBUF_TRANSPORT, len, PBUF_RAM);
+  pb = pbuf_alloc(PBUF_TRANSPORT_UDP, len, PBUF_RAM);
   if (pb == NULL) {
     return ERR_MEM;
   }

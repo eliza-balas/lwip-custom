@@ -120,7 +120,7 @@ close_handle(void)
 static struct pbuf*
 init_packet(u16_t opcode, u16_t extra, size_t size)
 {
-  struct pbuf* p = pbuf_alloc(PBUF_TRANSPORT, (u16_t)(TFTP_HEADER_LENGTH + size), PBUF_RAM);
+  struct pbuf* p = pbuf_alloc(PBUF_TRANSPORT_UDP, (u16_t)(TFTP_HEADER_LENGTH + size), PBUF_RAM);
   u16_t* payload;
 
   if (p != NULL) {
@@ -195,7 +195,7 @@ static err_t
 resend_data(const ip_addr_t *addr, u16_t port)
 {
   err_t ret;
-  struct pbuf *p = pbuf_alloc(PBUF_TRANSPORT, tftp_state.last_data->len, PBUF_RAM);
+  struct pbuf *p = pbuf_alloc(PBUF_TRANSPORT_UDP, tftp_state.last_data->len, PBUF_RAM);
   if (p == NULL) {
     return ERR_MEM;
   }

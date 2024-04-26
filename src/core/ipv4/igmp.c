@@ -763,7 +763,7 @@ igmp_send(struct netif *netif, struct igmp_group *group, u8_t type)
   ip4_addr_t  *dest = NULL;
 
   /* IP header + "router alert" option + IGMP header */
-  p = pbuf_alloc(PBUF_TRANSPORT, IGMP_MINLEN, PBUF_RAM);
+  p = pbuf_alloc(PBUF_IP_OPT_IGMP, IGMP_MINLEN, PBUF_RAM);
 
   if (p) {
     igmp = (struct igmp_msg *)p->payload;

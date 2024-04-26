@@ -74,12 +74,20 @@ extern "C" {
 
 /* @todo: We need a mechanism to prevent wasting memory in every pbuf
    (TCP vs. UDP, IPv4 vs. IPv6: UDP/IPv4 packets may waste up to 28 bytes) */
+/* Add 2 extra bytes for alignment to 4 bytes. */
+#define PBUF_TRANSPORT_HLEN          20 + 2
+/**
+ * Use this for final payload address alignment which contains
+ * all the headers.
+ */
+#define PBUF_TRANSPORT_TCP_HLEN      20
+#define PBUF_TRANSPORT_UDP_HLEN      8
 
-#define PBUF_TRANSPORT_HLEN 20
 #if LWIP_IPV6
-#define PBUF_IP_HLEN        40
+#define PBUF_IP_HLEN                 40
 #else
-#define PBUF_IP_HLEN        20
+#define PBUF_IP_HLEN                 20
+#define PBUF_IP_OPT_IGMP_HLEN        4
 #endif
 
 /**
@@ -90,7 +98,22 @@ typedef enum {
   /** Includes spare room for transport layer header, e.g. UDP header.
    * Use this if you intend to pass the pbuf to functions like udp_send().
    */
+  PBUF_TRANSPORT_UDP = PBUF_LINK_ENCAPSULATION_HLEN + PBUF_LINK_HLEN + PBUF_IP_HLEN + PBUF_TRANSPORT_UDP_HLEN,
+  /** Includes spare room for transport layer header, e.g. TCP header.
+   * Use this if you intend to pass the pbuf to functions like tcp_output().
+   */
+  PBUF_TRANSPORT_TCP = PBUF_LINK_ENCAPSULATION_HLEN + PBUF_LINK_HLEN + PBUF_IP_HLEN + PBUF_TRANSPORT_TCP_HLEN,
+  /** Keep this for backwards compatibility for netbuf and sockets, or others.
+   * Use this if you don't care about address alignment for final payload
+   * address, otherwise use the PBUF_TRANSPORT_UDP or PBUF_TRANSPORT_TCP
+   * where needed.
+   */
   PBUF_TRANSPORT = PBUF_LINK_ENCAPSULATION_HLEN + PBUF_LINK_HLEN + PBUF_IP_HLEN + PBUF_TRANSPORT_HLEN,
+
+  /** Includes spare room for IP header + ROUTER_ALERT option.
+   * Use this if you intend to pass the pbuf to functions like igmp_send().
+   */
+  PBUF_IP_OPT_IGMP = PBUF_LINK_ENCAPSULATION_HLEN + PBUF_LINK_HLEN + PBUF_IP_HLEN + PBUF_IP_OPT_IGMP_HLEN,
   /** Includes spare room for IP header.
    * Use this if you intend to pass the pbuf to functions like raw_send().
    */
